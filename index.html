@@ -1,64 +1,106 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Catchy — Login</title>
-
-  <!-- Tailwind -->
-  <script src="https://cdn.tailwindcss.com"></script>
-
-  <style>
-    .glass { background: rgba(255,255,255,0.06); backdrop-filter: blur(6px); }
-  </style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Catchy — Lost & Found, Reimagined</title>
+  <link rel="stylesheet" href="css/styles.css" />
 </head>
-
-<body class="min-h-screen bg-gradient-to-br from-indigo-900 via-purple-900 to-slate-900 text-white flex items-center justify-center">
-
-  <div class="w-full max-w-3xl p-6">
-    <div class="grid md:grid-cols-2 gap-6 items-center">
-
-      <div class="glass p-8 rounded-2xl shadow-xl">
-        <h1 class="text-4xl font-extrabold mb-3">Catchy</h1>
-        <p class="opacity-80 text-sm mb-6">
-          Community Lost & Found. Fast alerts. AI Assistance. Private and secure.
-        </p>
-
-        <ul class="text-sm opacity-75 space-y-2">
-          <li>✔️ AI description generator</li>
-          <li>✔️ Smart matching system</li>
-          <li>✔️ WhatsApp alerts (later)</li>
-        </ul>
+<body>
+  <header class="topbar">
+    <div class="container">
+      <div class="brand">
+        <img src="assets/logo.png" alt="Catchy logo" class="logo" />
+        <h1>Catchy</h1>
       </div>
-
-      <div class="glass p-8 rounded-2xl shadow-xl">
-        <h2 class="text-2xl font-semibold mb-4">Login</h2>
-
-        <form id="loginForm" class="space-y-4">
-          <input id="loginEmail" type="email" placeholder="Email"
-            class="w-full p-3 rounded bg-white/10" required>
-
-          <input id="loginPassword" type="password" placeholder="Password"
-            class="w-full p-3 rounded bg-white/10" required>
-
-          <button class="w-full py-3 rounded bg-gradient-to-r from-emerald-400 to-teal-300 text-black font-bold">
-            Login
-          </button>
-        </form>
-
-        <p class="mt-4 text-sm">
-          No account?
-          <a href="signup.html" class="text-cyan-200 underline">Create one</a>
-        </p>
-
-        <div id="authMessage" class="text-sm mt-3 hidden p-2 rounded"></div>
-      </div>
-
+      <nav>
+        <button id="btn-signin" class="btn ghost">Sign in</button>
+        <button id="btn-create" class="btn primary">Create account</button>
+      </nav>
     </div>
-  </div>
+  </header>
 
-  <script src="js/firebase.js"></script>
-  <script src="js/auth.js"></script>
+  <main>
+    <section class="hero">
+      <div class="container hero-grid">
+        <div class="hero-left">
+          <h2>Find what you lost. Reunite with who you lost.</h2>
+          <p class="lead">
+            Catchy notifies people close to the location you last saw something — or someone.
+            Upload photos, pin multiple locations on the map, and let the community help.
+          </p>
+
+          <div class="cta-row">
+            <button id="hero-signup" class="btn large primary">Create Account</button>
+            <button id="hero-learn" class="btn large ghost">How it works</button>
+          </div>
+
+          <ul class="features">
+            <li>Pin multiple locations on map</li>
+            <li>Upload photos or use camera</li>
+            <li>AI image description & voice-to-text</li>
+            <li>Private chat after match</li>
+          </ul>
+        </div>
+
+        <aside class="hero-right card">
+          <h3>Sign-up / Sign-in</h3>
+          <form id="authForm" class="auth-form" autocomplete="off">
+            <label>
+              <span>Username</span>
+              <input id="username" name="username" type="text" placeholder="Enter display name" required />
+            </label>
+            <label>
+              <span>Email</span>
+              <input id="email" name="email" type="email" placeholder="name@example.com" required />
+            </label>
+            <label>
+              <span>Password</span>
+              <input id="password" name="password" type="password" placeholder="Create password" required />
+            </label>
+
+            <div class="social-row">
+              <button type="button" id="googleBtn" class="btn google">Sign in with Google</button>
+            </div>
+
+            <div class="form-actions">
+              <button type="submit" class="btn primary">Create account</button>
+              <button id="signinToggle" type="button" class="btn ghost">Already have an account? Sign in</button>
+            </div>
+
+            <p class="small muted">
+              By creating an account you agree to our <a href="#">Terms</a> and <a href="#">Privacy</a>.
+            </p>
+          </form>
+        </aside>
+      </div>
+    </section>
+
+    <section class="about container">
+      <h3>Why Catchy?</h3>
+      <p>
+        Catchy reduces the time between losing and finding. Our community-driven alerts,
+        map pinning and private matching ensure privacy and speed. We’ll add WhatsApp notifications,
+        AI-powered image descriptions and voice-to-text soon.
+      </p>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <small>© Catchy — Built with ❤️</small>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+    <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
+
+  <script src="js/firebase-config.js"></script>
+  <script src="js/main.js"></script>
 
 </body>
 </html>
