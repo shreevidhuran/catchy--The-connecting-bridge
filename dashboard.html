@@ -5,100 +5,32 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Catchy — Dashboard</title>
   <link rel="stylesheet" href="css/styles.css" />
-  <!-- Leaflet CSS -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-  <style>
-    .dashboard-grid { display:grid; grid-template-columns: 280px 1fr; gap:18px; padding:24px; }
-    .sidebar { background: rgba(255,255,255,0.02); border-radius:12px; padding:14px; }
-    .content { background: rgba(255,255,255,0.01); border-radius:12px; padding:14px; min-height:70vh; }
-    .tile { padding:12px; margin-bottom:10px; border-radius:8px; background:var(--glass); cursor:pointer }
-    #map { height:300px; border-radius:8px; overflow:hidden; }
-    .thumb { width:80px;height:80px;object-fit:cover;border-radius:8px }
-  </style>
 </head>
 <body>
   <header class="topbar">
-    <div class="container" style="display:flex;justify-content:space-between;align-items:center">
-      <div class="brand"><img src="assets/logo.png" class="logo" /> <strong>Catchy</strong></div>
-      <div id="userBar">
-        <span id="userName" style="margin-right:12px;color:var(--muted)"></span>
-        <button id="btnLogout" class="btn ghost">Logout</button>
+    <div class="container">
+      <div class="brand">
+        <img src="assets/logo.png" alt="Catchy logo" class="logo" />
+        <h1>Catchy — Dashboard</h1>
       </div>
+      <nav>
+        <button id="logoutBtn" class="btn ghost">Logout</button>
+      </nav>
     </div>
   </header>
 
   <main class="container">
-    <div class="dashboard-grid">
-      <aside class="sidebar">
-        <h4>Quick actions</h4>
-        <div id="lastItem" class="tile">Last item</div>
-        <div id="foundItem" class="tile">Found item</div>
-        <div id="lastPerson" class="tile">Last person</div>
-        <div id="foundPerson" class="tile">Found person</div>
-
-        <hr />
-        <h4>Your history</h4>
-        <div id="myHistory" class="tile">History of my reports</div>
-      </aside>
-
-      <section class="content">
-        <h3>Create report</h3>
-        <form id="reportForm">
-          <label><span>Report type</span>
-            <select id="reportType">
-              <option value="lost_item">Lost item</option>
-              <option value="found_item">Found item</option>
-              <option value="lost_person">Lost person</option>
-              <option value="found_person">Found person</option>
-            </select>
-          </label>
-
-          <label><span>Title</span>
-            <input id="title" placeholder="e.g., Black Wallet" required />
-          </label>
-
-          <label><span>Description</span>
-            <textarea id="desc" rows="3" placeholder="Describe the item or person"></textarea>
-            <div style="margin-top:8px;">
-              <button id="startVoice" type="button" class="btn ghost">🎤 Record voice</button>
-              <select id="speechLang">
-                <option value="en-IN">English (India)</option>
-                <option value="ta-IN">Tamil</option>
-                <option value="hi-IN">Hindi</option>
-              </select>
-            </div>
-          </label>
-
-          <label><span>Images (you can take photo)</span>
-            <input id="images" type="file" accept="image/*" multiple />
-            <div id="thumbs"></div>
-          </label>
-
-          <label><span>Map — pin locations (click to add pin)</span>
-            <div id="map"></div>
-            <small class="muted">Click map to add pins. Pins will be saved with the report.</small>
-          </label>
-
-          <div style="margin-top:14px;">
-            <button class="btn primary" type="submit">Submit report</button>
-            <span id="status" style="margin-left:12px;color:var(--muted)"></span>
-          </div>
-        </form>
-      </section>
-    </div>
+    <section class="card">
+      <h2>Welcome, <span id="displayName">User</span></h2>
+      <p id="userEmail"></p>
+      <p id="userUid" style="font-size:12px;color:var(--muted)"></p>
+      <div id="dashboardContent">
+        <p>Here you will see your reports, history, and match suggestions.</p>
+      </div>
+    </section>
   </main>
 
-  <footer class="site-footer"><div class="container"><small class="muted">© Catchy</small></div></footer>
-
-  <!-- Firebase & Leaflet -->
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
-
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-
-  <script src="js/firebase-config.js"></script>
-  <script src="js/dashboard.js"></script>
+  <script type="module" src="js/dashboard.js"></script>
 </body>
 </html>
+

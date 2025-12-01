@@ -1,64 +1,86 @@
-// js/main.js (Firebase auth integration)
-document.addEventListener('DOMContentLoaded', () => {
-  // Initialize Firebase
-  firebase.initializeApp(firebaseConfig);
-  const auth = firebase.auth();
+// js/main.js (make sure index.html loads it as type="module")
+import { auth, googleProvider } from './Firebase-config.js';
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signInWithPopup,
+  signOut,
+  onAuthStateChanged,
+  updateProfile
+} from "https://www.gstatic.com/firebasejs/9.22.1/firebase-auth.js";
 
-  const authForm = document.getElementById('authForm');
-  const signInToggle = document.getElementById('signinToggle');
-  const heroSignup = document.getElementById('hero-signup');
-  const googleBtn = document.getElementById('googleBtn');
-  const btnCreate = document.getElementById('btn-create');
-  const btnSignin = document.getElementById('btn-signin');
+// UI elements (same ids as Stage 1)
+const authForm = document.getElementById('authForm');
+const signInToggle = document.getElementById('signinToggle');
+const heroSignup = document.getElementById('hero-signup');
+const googleBtn = document.getElementById('googleBtn');
 
-  let isSignInMode = false;
+let isSignInMode = false;
 
-  function setFormMode(signIn) {
-    isSignInMode = signIn;
-    const submitBtn = authForm.querySelector('button[type="submit"]');
-    submitBtn.textContent = signIn ? 'Sign in' : 'Create account';
-    signInToggle.textContent = signIn ? "Don't have an account? Create" : "Already have an account? Sign in";
-    document.getElementById('username').closest('label').style.display = signIn ? 'none' : 'block';
+function setFormMode(signIn){
+  isSignInMode = signIn;
+  const submitBtn = authForm.querySelector('button[type="submit"]');
+  submitBtn.textContent = signIn ? 'Sign in' : 'Create account';
+  signInToggle.textContent = signIn ? "Don't have an account? Create" : "Already have an account? Sign in";
+  document.getElementById('username').closest('label').style.display = signIn ? 'none' : 'block';
+}
+
+signInToggle.addEventListener('click', ()=> setFormMode(!isSignInMode));
+heroSignup.addEventListener('click', ()=> setFormMode(false));
+document.getElementById('btn-create').addEventListener('click', ()=> setFormMode(false));
+document.getElementById('btn-signin').addEventListener('click', ()=> setFormMode(true));
+
+// Sign up / Sign in form handler
+authForm.addEventListener('submit', async (e)=>{
+  e.preventDefault();
+  const email = document.getElementById('email').value.trim();
+  const password = document.getElementById('password').value;
+  const username = document.getElementById('username').value.trim() || '';
+
+  if(!email || !password){
+    alert('Please enter email and password.');
+    return;
   }
 
-  signInToggle.addEventListener('click', () => setFormMode(!isSignInMode));
-  heroSignup.addEventListener('click', () => setFormMode(false));
-  btnCreate.addEventListener('click', () => setFormMode(false));
-  btnSignin.addEventListener('click', () => setFormMode(true));
-
-  authForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const email = document.getElementById('email').value.trim();
-    const password = document.getElementById('password').value;
-    const username = document.getElementById('username').value.trim() || '';
-
-    try {
-      if (isSignInMode) {
-        await auth.signInWithEmailAndPassword(email, password);
-        // redirect to dashboard
-        window.location.href = 'dashboard.html';
-      } else {
-        const userCred = await auth.createUserWithEmailAndPassword(email, password);
-        // set displayName
-        if (userCred.user) await userCred.user.updateProfile({ displayName: username });
-        // redirect to dashboard
-        window.location.href = 'dashboard.html';
+  try {
+    if(isSignInMode){
+      // Sign in
+      await signInWithEmailAndPassword(auth, email, password);
+      // onAuthStateChanged will redirect to dashboard
+    } else {
+      // Create account
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      if(username) {
+        await updateProfile(userCredential.user, { displayName: username });
       }
-    } catch (err) {
-      alert('Auth error: ' + err.message);
+      // onAuthStateChanged will redirect to dashboard
     }
-  });
-
-  googleBtn.addEventListener('click', async () => {
-    const provider = new firebase.auth.GoogleAuthProvider();
-    try {
-      await auth.signInWithPopup(provider);
-      window.location.href = 'dashboard.html';
-    } catch (err) {
-      alert('Google sign-in error: ' + err.message);
-    }
-  });
-
-  // ensure default mode
-  setFormMode(false);
+  } catch (err) {
+    console.error(err);
+    alert(err.message || 'Authentication error');
+  }
 });
+
+// Google Sign-in
+googleBtn.addEventListener('click', async ()=>{
+  try {
+    await signInWithPopup(auth, googleProvider);
+    // onAuthStateChanged will redirect to dashboard
+  } catch (err) {
+    console.error(err);
+    alert(err.message || 'Google sign-in error');
+  }
+});
+
+// If user is already logged in, redirect to dashboard
+onAuthStateChanged(auth, user => {
+  if(user){
+    // logged in
+    window.location.href = 'dashboard.html';
+  } else {
+    // not logged in — stay on index
+    // You could hide/show UI here if needed
+    setFormMode(false); // default
+  }
+});
+

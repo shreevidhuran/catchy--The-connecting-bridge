@@ -1,5 +1,8 @@
 // js/firebase-config.js
-// Paste your firebaseConfig here from Firebase console.
+// Replace the firebaseConfig object below with the values from your Firebase console (web app)
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
+import { getAuth, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-auth.js";
+
 const firebaseConfig = {
   apiKey: "AIzaSyBpwwJoR1eH8cqgxeMvYBbhhzQKQGwau3E",
   authDomain: "catchy-app-7b123.firebaseapp.com",
@@ -10,5 +13,6 @@ const firebaseConfig = {
   measurementId: "G-LQ0M07C8MM"
 };
 
-
-// init firebase (we'll import firebase via CDN in pages)
+const app = initializeApp(firebaseConfig);
+export const auth = getAuth(app);
+export const googleProvider = new GoogleAuthProvider();
