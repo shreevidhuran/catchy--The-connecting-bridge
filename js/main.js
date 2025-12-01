@@ -83,4 +83,3 @@ onAuthStateChanged(auth, user => {
     setFormMode(false); // default
   }
 });
-

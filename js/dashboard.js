@@ -1,5 +1,5 @@
 // js/dashboard.js
-import { auth } from './firebase-config.js';
+import { auth } from './Firebase-config.js';
 import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-auth.js";
 
 const displayNameEl = document.getElementById('displayName');
@@ -23,4 +23,3 @@ logoutBtn.addEventListener('click', async ()=>{
   await signOut(auth);
   window.location.href = 'index.html';
 });
-
