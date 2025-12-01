@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Catchy — Dashboard</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    .glass { background: rgba(255,255,255,0.04); backdrop-filter: blur(4px); }
+  </style>
+</head>
+
+<body class="min-h-screen bg-gradient-to-br from-indigo-800 via-purple-800 to-violet-900 text-white">
+
+  <div class="max-w-6xl mx-auto p-6">
+
+    <!-- HEADER -->
+    <header class="flex justify-between items-center mb-6">
+      <div>
+        <h1 class="text-3xl font-bold">Catchy</h1>
+        <p class="text-sm opacity-75">Lost & Found with AI Support</p>
+      </div>
+
+      <div id="headerRight" class="flex items-center gap-3"></div>
+    </header>
+
+    <!-- CONTENT -->
+    <div class="grid md:grid-cols-3 gap-6">
+
+      <!-- LEFT MENU -->
+      <div class="glass p-6 rounded-2xl">
+        <h2 class="text-xl font-semibold mb-4">Menu</h2>
+
+        <div class="space-y-3">
+
+          <a href="report.html"
+             class="block p-3 rounded bg-gradient-to-r from-yellow-400 to-orange-500 text-black font-bold">
+             ➕ New Report
+          </a>
+
+          <a href="history-lost.html"
+             class="block p-3 rounded bg-white/10 hover:bg-white/20">
+             📁 My Lost Reports
+          </a>
+
+          <a href="history-found.html"
+             class="block p-3 rounded bg-white/10 hover:bg-white/20">
+             📂 My Found Reports
+          </a>
+
+          <a href="match-chat.html"
+             class="block p-3 rounded bg-white/10 hover:bg-white/20">
+             💬 Chats
+          </a>
+
+          <a href="profile.html"
+             class="block p-3 rounded bg-white/10 hover:bg-white/20">
+             👤 My Profile
+          </a>
+
+          <button id="logoutBtn"
+             class="w-full p-2 mt-4 rounded bg-red-500 text-white">
+             Logout
+          </button>
+        </div>
+      </div>
+
+      <!-- MAIN CONTENT -->
+      <div class="glass p-6 rounded-2xl md:col-span-2">
+
+        <h2 class="text-xl font-semibold mb-4">Overview</h2>
+
+        <div class="grid grid-cols-3 gap-4 mb-6">
+          <div class="glass p-4 text-center rounded">
+            <h3 id="lostCount" class="text-3xl font-bold">0</h3>
+            <p class="text-sm">Lost Reports</p>
+          </div>
+          <div class="glass p-4 text-center rounded">
+            <h3 id="foundCount" class="text-3xl font-bold">0</h3>
+            <p class="text-sm">Found Reports</p>
+          </div>
+          <div class="glass p-4 text-center rounded">
+            <h3 id="rankPoints" class="text-3xl font-bold">0</h3>
+            <p class="text-sm">Rank Points</p>
+          </div>
+        </div>
+
+        <h3 class="font-semibold mb-2">Notifications</h3>
+        <div id="notifications" class="space-y-2">
+          <div class="p-3 bg-white/10 rounded">No notifications yet</div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script src="js/firebase.js"></script>
+  <script src="js/dashboard.js"></script>
+
+</body>
+</html>
+

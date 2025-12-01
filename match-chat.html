@@ -1,0 +1,30 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Chats — Catchy</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen bg-slate-900 text-white p-6">
+  <div class="max-w-4xl mx-auto">
+    <h1 class="text-2xl font-bold mb-4">Private Chats</h1>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div class="col-span-1 glass p-4 rounded" id="chatList">
+        Loading chats...
+      </div>
+      <div class="col-span-2 glass p-4 rounded" id="chatWindow">
+        <div id="chatHeader">Select a chat</div>
+        <div id="messages" class="h-64 overflow-auto mt-4 space-y-2"></div>
+        <form id="msgForm" class="mt-4 hidden">
+          <input id="msgInput" class="w-full p-2 rounded bg-white/10" placeholder="Type message..." />
+          <button class="mt-2 px-4 py-2 bg-emerald-400 text-black rounded" type="submit">Send</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/firebase.js"></script>
+  <script src="js/chat.js"></script>
+</body>
+</html>

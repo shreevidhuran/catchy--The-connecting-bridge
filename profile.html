@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Profile — Catchy</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    .glass { background: rgba(255,255,255,0.06); backdrop-filter: blur(6px); }
+  </style>
+</head>
+
+<body class="bg-gradient-to-br from-sky-800 via-indigo-800 to-violet-900 text-white min-h-screen p-6">
+
+  <div class="max-w-3xl mx-auto glass p-6 rounded-2xl shadow-lg">
+    
+    <h1 class="text-3xl font-bold mb-6">My Profile</h1>
+
+    <div class="flex flex-col items-center">
+      <img id="profileImgPreview" 
+           class="w-32 h-32 rounded-full object-cover border-2 border-white"
+           src="">
+
+      <input id="profileImgFile" type="file" accept="image/*" 
+             class="mt-3 text-sm"/>
+      <button id="cameraBtn" 
+              class="mt-2 bg-white/10 px-4 py-1 rounded">
+              Open Camera
+      </button>
+
+      <video id="cameraStream" width="250" class="mt-2 hidden"></video>
+      <canvas id="cameraCanvas" width="250" height="250" class="hidden"></canvas>
+      <button id="capturePhotoBtn" 
+              class="hidden mt-2 bg-orange-400 px-3 py-1 rounded text-black">
+              Capture Photo
+      </button>
+    </div>
+
+    <div class="mt-6 space-y-4">
+
+      <div>
+        <label class="text-sm opacity-80">Username</label>
+        <input id="profileUsername" class="w-full p-3 rounded bg-white/10">
+      </div>
+
+      <div>
+        <label class="text-sm opacity-80">Email (not editable)</label>
+        <input id="profileEmail" disabled class="w-full p-3 rounded bg-white/20">
+      </div>
+
+      <div>
+        <label class="text-sm opacity-80">Phone Number</label>
+        <input id="profilePhone" class="w-full p-3 rounded bg-white/10">
+      </div>
+
+      <div>
+        <label class="text-sm opacity-80">Location</label>
+        <input id="profileLocation" class="w-full p-3 rounded bg-white/10">
+      </div>
+
+      <div>
+        <label class="text-sm opacity-80">Bio / About</label>
+        <textarea id="profileBio" class="w-full p-3 rounded bg-white/10"></textarea>
+        <button id="voiceBioBtn" class="mt-1 bg-white/10 px-3 py-1 text-sm rounded">
+          🎤 Speak
+        </button>
+      </div>
+
+      <div class="flex justify-between mt-4 text-center">
+        <div>
+          <div id="lostCount" class="text-3xl font-bold">0</div>
+          <div class="text-sm">Lost Reports</div>
+        </div>
+        <div>
+          <div id="foundCount" class="text-3xl font-bold">0</div>
+          <div class="text-sm">Found Reports</div>
+        </div>
+      </div>
+
+      <button id="saveProfileBtn" 
+              class="w-full py-3 bg-emerald-400 text-black rounded-lg font-bold mt-6">
+              Save Profile
+      </button>
+
+      <button id="deleteAccountBtn" 
+              class="w-full py-3 bg-red-600 text-white rounded-lg font-bold">
+              Delete Account
+      </button>
+
+    </div>
+  </div>
+
+  <script src="js/firebase.js"></script>
+  <script type="module" src="js/utils.js"></script>
+  <script src="js/profile.js"></script>
+
+</body>
+</html>

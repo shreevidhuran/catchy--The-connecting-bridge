@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Catchy — Report Lost/Found</title>
+
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    .glass { background: rgba(255,255,255,0.06); backdrop-filter: blur(6px); }
+    .mini { font-size: 0.9rem; }
+  </style>
+</head>
+
+<body class="min-h-screen bg-gradient-to-br from-indigo-900 via-purple-900 to-violet-900 text-white p-6">
+  <div class="max-w-4xl mx-auto">
+
+    <header class="flex items-center justify-between mb-6">
+      <div>
+        <h1 class="text-3xl font-bold">Report Lost / Found</h1>
+        <p class="text-sm opacity-80">Fill details and notify nearby volunteers</p>
+      </div>
+      <div>
+        <a href="dashboard.html" class="text-sm underline text-cyan-200">← Back to dashboard</a>
+      </div>
+    </header>
+
+    <form id="reportForm" class="glass p-6 rounded-2xl shadow-lg space-y-4">
+      <div class="flex gap-3">
+        <select id="reportType" class="p-3 rounded bg-white/10 w-1/2">
+          <option value="lost">Lost Item</option>
+          <option value="found">Found Item</option>
+        </select>
+
+        <select id="languageSelect" class="p-3 rounded bg-white/10 w-1/2">
+          <option value="en-US">English (US)</option>
+          <option value="ta-IN">Tamil (India)</option>
+          <option value="hi-IN">Hindi (India)</option>
+          <option value="auto">Auto-detect</option>
+        </select>
+      </div>
+
+      <input id="itemTitle" type="text" placeholder="Item name (eg: Black Wallet, Samsung A12, Gold Ring)"
+             class="w-full p-3 rounded bg-white/10 placeholder-gray-300"/>
+
+      <textarea id="itemDesc" placeholder="Describe the item (color, marks, serial no.)"
+                class="w-full p-3 rounded bg-white/10 placeholder-gray-300"></textarea>
+
+      <!-- VOICE INPUT -->
+      <div class="flex items-center gap-3">
+        <button type="button" id="voiceBtn" class="py-2 px-3 rounded bg-emerald-400 text-black font-semibold">🎤 Voice → Text</button>
+        <span id="voiceStatus" class="mini opacity-80">Voice not started</span>
+      </div>
+
+      <!-- Camera preview and file upload -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="p-3 bg-white/5 rounded">
+          <div class="flex items-center justify-between mb-2">
+            <div class="font-medium">Camera capture</div>
+            <div class="text-xs opacity-80">Use your device camera</div>
+          </div>
+          <video id="cameraPreview" autoplay class="w-full rounded bg-black" playsinline></video>
+          <div class="flex gap-2 mt-2">
+            <button type="button" id="startCamera" class="py-2 px-3 rounded bg-blue-600">Start Camera</button>
+            <button type="button" id="captureBtn" class="py-2 px-3 rounded bg-green-600">Capture</button>
+            <button type="button" id="stopCamera" class="py-2 px-3 rounded bg-red-600">Stop</button>
+          </div>
+        </div>
+
+        <div class="p-3 bg-white/5 rounded">
+          <div class="flex items-center justify-between mb-2">
+            <div class="font-medium">Files & gallery</div>
+            <div class="text-xs opacity-80">Upload photos or choose from gallery</div>
+          </div>
+          <input id="fileInput" type="file" accept="image/*" multiple class="w-full p-2 rounded bg-white/10"/>
+          <div id="thumbs" class="mt-3 grid grid-cols-3 gap-2"></div>
+
+          <div class="mt-4">
+            <button type="button" id="ocrBtn" class="py-2 px-3 rounded bg-indigo-600">🔎 Extract text from selected image (OCR)</button>
+            <button type="button" id="aiGenBtn" class="py-2 px-3 rounded bg-yellow-400 text-black ml-2">✨ Generate AI description</button>
+          </div>
+
+          <div id="ocrResult" class="mt-3 p-2 bg-white/5 rounded mini"></div>
+        </div>
+      </div>
+
+      <!-- Map / place picker -->
+      <div>
+        <input id="placeInput" placeholder="Search last seen location (use place suggestions)" class="w-full p-3 rounded bg-white/10"/>
+        <div id="map" class="w-full h-48 mt-2 rounded"></div>
+      </div>
+
+      <div class="grid grid-cols-2 gap-3">
+        <input id="reportDate" type="datetime-local" class="p-3 rounded bg-white/10"/>
+        <input id="contactPhone" type="tel" placeholder="Your phone (for WhatsApp alerts, optional)" class="p-3 rounded bg-white/10"/>
+      </div>
+
+      <div class="flex items-center justify-between">
+        <div class="text-sm opacity-80">Auto-similarity search: <span id="matchHint">Idle</span></div>
+        <div>
+          <button id="submitBtn" class="py-2 px-4 rounded bg-gradient-to-r from-yellow-400 to-orange-500 text-black font-semibold">Submit Report</button>
+        </div>
+      </div>
+
+      <div id="formMsg" class="mt-3 p-3 rounded hidden"></div>
+    </form>
+
+    <div id="reportSuccess" class="hidden mt-6 p-4 rounded bg-green-600">✔️ Report submitted successfully — you will be notified when we have updates.</div>
+
+  </div>
+
+  <!-- Load Tesseract.js (OCR) -->
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4.0.2/dist/tesseract.min.js"></script>
+
+  <!-- We'll dynamically load Google Maps script from report.js using your key -->
+  <script src="js/firebase.js"></script>
+  <script src="js/report.js"></script>
+</body>
+</html>
+
+

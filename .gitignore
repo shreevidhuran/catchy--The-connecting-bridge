@@ -1,0 +1,15 @@
+# Node / functions
+node_modules/
+functions/node_modules/
+.env
+.env.local
+/.firebase/
+.DS_Store
+
+# Local dev / editor
+.vscode/
+*.log
+
+# Build artifacts (if any)
+dist/
+build/
