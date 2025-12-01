@@ -1,0 +1,167 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Catchy — Report Found Item</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""/>
+  <style>
+    body { font-family: system-ui, Arial; margin: 20px; color:#ddd; background:#0e1620; }
+    .container { max-width:900px; margin:0 auto; }
+    label{display:block;margin-top:12px}
+    input, textarea, button, select { width:100%; padding:10px; margin-top:6px; border-radius:6px; border:1px solid #444; background:#0b1120; color:#ddd; }
+    #map { height:320px; margin-top:10px; border-radius:8px; border:1px solid #333; }
+    .preview img{ height:88px; border-radius:6px; margin-right:8px; }
+    .progress { height:6px; background:#222; border-radius:4px; overflow:hidden; margin-top:6px; }
+    .progress > div { height:100%; width:0%; background:#2ecc71; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Report Found Item</h1>
+    <p class="note">Logged-in users only.</p>
+
+    <form id="foundForm">
+      <label>Item name</label>
+      <input id="itemName" required />
+
+      <label>Description</label>
+      <textarea id="description" rows="4"></textarea>
+
+      <label>Where found (map)</label>
+      <div id="map"></div>
+
+      <label>Photos</label>
+      <input id="photos" type="file" accept="image/*" multiple />
+      <div id="preview" class="preview"></div>
+
+      <div style="margin-top:10px">
+        <label>Condition</label>
+        <select id="condition">
+          <option value="good">Good</option>
+          <option value="used">Used</option>
+          <option value="damaged">Damaged</option>
+        </select>
+      </div>
+
+      <div class="actions" style="display:flex; gap:10px; margin-top:12px">
+        <button type="submit">Submit Found Report</button>
+        <button id="clearMap" type="button">Clear Pin</button>
+      </div>
+
+      <div class="progress"><div id="uploadBar"></div></div>
+      <div id="status" style="margin-top:8px;color:#aaa"></div>
+    </form>
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+
+  <script type="module">
+    import "/js/init-firebase.js";
+    import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+    import { collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+    import { ref as sRef, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-storage.js";
+
+    const auth = window.firebaseAuth;
+    const db = window.firebaseDB;
+    const storage = window.firebaseStorage;
+
+    onAuthStateChanged(auth, user => {
+      if (!user) { alert('Please sign in'); window.location.href = '/'; }
+    });
+
+    // map
+    const map = L.map('map').setView([20.5937,78.9629], 5);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19}).addTo(map);
+
+    let pin = null;
+    map.on('click', (e)=> {
+      if (pin) map.removeLayer(pin);
+      pin = L.marker(e.latlng, { draggable:true }).addTo(map);
+      pin.on('dragend', ()=>{});
+    });
+
+    document.getElementById('clearMap').addEventListener('click', ()=> {
+      if (pin) { map.removeLayer(pin); pin = null; }
+    });
+
+    const photosInput = document.getElementById('photos');
+    const preview = document.getElementById('preview');
+    photosInput.addEventListener('change', ()=> {
+      preview.innerHTML = '';
+      Array.from(photosInput.files).forEach(file=>{
+        const img = document.createElement('img');
+        img.src = URL.createObjectURL(file);
+        img.style.height = '88px';
+        img.style.objectFit = 'cover';
+        preview.appendChild(img);
+      });
+    });
+
+    function uploadFile(file, onProgress) {
+      const path = `reports/${Date.now()}_${file.name}`;
+      const storageRef = sRef(storage, path);
+      const task = uploadBytesResumable(storageRef, file);
+      return new Promise((resolve, reject)=>{
+        task.on('state_changed', snap=>{
+          const pct = Math.round((snap.bytesTransferred / snap.totalBytes)*100);
+          onProgress(pct);
+        }, reject, async ()=>{
+          const url = await getDownloadURL(task.snapshot.ref);
+          resolve(url);
+        });
+      });
+    }
+
+    async function uploadAll(files, progressCallback) {
+      const urls = [];
+      for (let i=0;i<files.length;i++){
+        const url = await uploadFile(files[i], (pct) => {
+          progressCallback(Math.round(((i + pct/100)/(files.length))*100));
+        });
+        urls.push(url);
+      }
+      return urls;
+    }
+
+    const form = document.getElementById('foundForm');
+    form.addEventListener('submit', async (e)=>{
+      e.preventDefault();
+      const user = auth.currentUser;
+      const name = document.getElementById('itemName').value.trim();
+      const desc = document.getElementById('description').value.trim();
+      const cond = document.getElementById('condition').value;
+      const files = photosInput.files;
+
+      if (!pin) return alert('Please drop a pin where you found the item.');
+
+      document.getElementById('status').textContent = 'Uploading...';
+      try {
+        let urls = [];
+        if (files.length) urls = await uploadAll(files, (pct)=>{ document.getElementById('uploadBar').style.width = pct + '%'; });
+
+        const loc = pin.getLatLng();
+        const docRef = await addDoc(collection(db, 'reports'), {
+          type: 'found',
+          userId: user.uid,
+          userEmail: user.email || null,
+          itemName: name,
+          description: desc,
+          condition: cond,
+          images: urls,
+          locations: [{ lat: loc.lat, lng: loc.lng }],
+          foundAt: new Date().toISOString(),
+          status: 'open',
+          createdAt: serverTimestamp()
+        });
+
+        document.getElementById('status').textContent = 'Saved — ID: ' + docRef.id;
+        setTimeout(()=> window.location.href = '/dashboard.html', 1000);
+      } catch (err) {
+        console.error(err);
+        document.getElementById('status').textContent = 'Error: ' + err.message;
+      }
+    });
+  </script>
+</body>
+</html>
